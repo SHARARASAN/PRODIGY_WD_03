@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tic-Tac-Toe</h1>
+        <div class="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button id="restartBtn">Restart Game</button>
+        <div id="status"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body style */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+/* Container for game */
+.container {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Tic-Tac-Toe Board */
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+/* Each cell in the Tic-Tac-Toe board */
+.cell {
+    background-color: #fff;
+    border: 2px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cell:hover {
+    background-color: #f0f0f0;
+}
+
+/* Restart button */
+#restartBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#restartBtn:hover {
+    background-color: #555;
+}
+
+/* Game status message */
+#status {
+    font-size: 18px;
+    color: #333;
+}
+
+// Variables to track game state
+let currentPlayer = 'X';
+let gameState = ['', '', '', '', '', '', '', '', ''];
+let isGameActive = true;
+
+// Winning combinations
+const winningConditions = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+    [0, 4, 8], [2, 4, 6] // Diagonals
+];
+
+// Status display
+const statusDisplay = document.getElementById('status');
+const cells = document.querySelectorAll('.cell');
+const restartBtn = document.getElementById('restartBtn');
+
+// Update status message
+const displayStatus = (message) => {
+    statusDisplay.textContent = message;
+};
+
+// Handle cell click
+const handleCellClick = (event) => {
+    const clickedCell = event.target;
+    const clickedCellIndex = clickedCell.getAttribute('data-index');
+
+    if (gameState[clickedCellIndex] !== '' || !isGameActive) {
+        return; // If the cell is already filled or game is not active, do nothing
+    }
+
+    // Update game state and cell display
+    gameState[clickedCellIndex] = currentPlayer;
+    clickedCell.textContent = currentPlayer;
+
+    // Check for result (win, draw, or continue)
+    checkResult();
+};
+
+// Check for a win, draw, or if the game should continue
+const checkResult = () => {
+    let roundWon = false;
+
+    // Check each winning condition
+    for (let i = 0; i < winningConditions.length; i++) {
+        const winCondition
